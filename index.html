@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VB Experiências — Case CRM | Lara Garcia</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --amber: #F5A623;
+    --amber-light: #FBBF24;
+    --amber-dim: rgba(245,166,35,0.12);
+    --bg: #0C0C0C;
+    --bg2: #141414;
+    --bg3: #1A1A1A;
+    --text: #F0EDE8;
+    --muted: #888;
+    --border: rgba(245,166,35,0.2);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body { background: var(--bg); color: var(--text); font-family: 'Sora', sans-serif; font-weight: 400; overflow-x: hidden; }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 18px 48px;
+    background: rgba(12,12,12,0.88); backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo { font-family: 'Playfair Display', serif; font-weight: 700; font-size: 15px; letter-spacing: 0.04em; color: var(--amber); }
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+  .nav-links a { color: var(--muted); text-decoration: none; font-size: 12px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; transition: color 0.2s; }
+  .nav-links a:hover { color: var(--amber); }
+
+  section { padding: 100px 48px; max-width: 1160px; margin: 0 auto; }
+
+  .hero {
+    min-height: 100vh; display: flex; align-items: center; padding-top: 80px;
+    max-width: 100%; position: relative; overflow: hidden;
+  }
+  .hero-bg {
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 60% 60% at 70% 50%, rgba(245,166,35,0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-inner {
+    max-width: 1160px; margin: 0 auto; padding: 0 48px;
+    display: grid; grid-template-columns: 1fr 420px; gap: 80px; align-items: center; width: 100%;
+  }
+  .hero-eyebrow { display: inline-flex; align-items: center; gap: 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); margin-bottom: 24px; }
+  .hero-eyebrow::before { content: ''; display: block; width: 32px; height: 1px; background: var(--amber); }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(42px, 5vw, 68px); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 28px; }
+  .hero h1 em { font-style: italic; color: var(--amber); }
+  .hero-sub { font-size: 16px; color: var(--muted); line-height: 1.7; max-width: 520px; margin-bottom: 48px; }
+  .hero-meta { display: flex; gap: 32px; }
+  .hero-meta-item .label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .hero-meta-item .value { font-size: 14px; font-weight: 500; color: var(--text); }
+
+  .hero-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 36px;
+    position: relative; overflow: hidden;
+  }
+  .hero-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, var(--amber), transparent); }
+  .hero-card-label { font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--amber); margin-bottom: 28px; }
+  .hero-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  .hero-stat .num { font-family: 'Playfair Display', serif; font-size: 36px; font-weight: 700; color: var(--amber); line-height: 1; margin-bottom: 6px; }
+  .hero-stat .desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .hero-stat-divider { grid-column: 1/-1; height: 1px; background: var(--border); }
+
+  .section-tag { display: inline-flex; align-items: center; gap: 10px; font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--amber); margin-bottom: 16px; }
+  .section-tag span { display: inline-block; width: 20px; height: 1px; background: var(--amber); }
+  .section-title { font-family: 'Playfair Display', serif; font-size: clamp(28px, 3.5vw, 44px); font-weight: 700; line-height: 1.1; letter-spacing: -0.02em; margin-bottom: 16px; }
+  .section-title em { font-style: italic; color: var(--amber); }
+  .section-desc { font-size: 15px; color: var(--muted); line-height: 1.8; max-width: 600px; }
+
+  .divider { max-width: 1160px; margin: 0 auto; padding: 0 48px; height: 1px; background: linear-gradient(90deg, transparent, var(--border), transparent); }
+
+  .context-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 56px; align-items: start; }
+  .context-text p { font-size: 15px; color: rgba(240,237,232,0.75); line-height: 1.85; margin-bottom: 20px; }
+  .context-text p strong { color: var(--text); font-weight: 600; }
+  .context-cards { display: flex; flex-direction: column; gap: 16px; }
+  .context-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 14px; padding: 22px 24px; display: flex; gap: 18px; align-items: flex-start; transition: border-color 0.2s; }
+  .context-card:hover { border-color: var(--amber); }
+  .context-card-icon { width: 38px; height: 38px; min-width: 38px; border-radius: 10px; background: var(--amber-dim); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .context-card h4 { font-size: 13px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
+  .context-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+
+  .problem-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-top: 56px; align-items: start; }
+  .problem-items { display: flex; flex-direction: column; gap: 20px; }
+  .problem-item { padding: 24px; border-radius: 14px; border-left: 3px solid var(--amber); background: var(--bg2); transition: transform 0.2s; }
+  .problem-item:hover { transform: translateX(4px); }
+  .problem-item h4 { font-size: 14px; font-weight: 600; margin-bottom: 8px; color: var(--text); }
+  .problem-item p { font-size: 13px; color: var(--muted); line-height: 1.65; }
+
+  .tension-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 36px; position: relative; }
+  .tension-box::after { content: 'TENSÃO CENTRAL'; position: absolute; top: -11px; left: 24px; font-size: 9px; font-weight: 700; letter-spacing: 0.2em; color: var(--amber); background: var(--bg2); padding: 0 10px; }
+  .tension-vs { display: flex; align-items: center; gap: 16px; margin-bottom: 24px; }
+  .tension-side { flex: 1; text-align: center; padding: 20px; border-radius: 12px; background: rgba(255,255,255,0.03); }
+  .tension-side .cost-label { font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .tension-side .cost-value { font-family: 'Playfair Display', serif; font-size: 28px; font-weight: 700; color: var(--amber); }
+  .tension-side .cost-desc { font-size: 11px; color: var(--muted); margin-top: 4px; }
+  .tension-divider { font-size: 20px; color: var(--muted); font-family: 'Playfair Display', serif; font-style: italic; }
+  .tension-insight { font-size: 13px; color: rgba(240,237,232,0.65); line-height: 1.7; padding-top: 16px; border-top: 1px solid var(--border); }
+  .tension-insight strong { color: var(--amber); }
+
+  .strategy-header { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; margin-bottom: 56px; align-items: end; }
+  .strategy-steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+  .step-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px 24px; transition: border-color 0.25s, transform 0.25s; }
+  .step-card:hover { border-color: var(--amber); transform: translateY(-4px); }
+  .step-num { font-family: 'Playfair Display', serif; font-size: 40px; font-weight: 700; color: var(--amber-dim); line-height: 1; margin-bottom: 12px; }
+  .step-card h4 { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 10px; line-height: 1.3; }
+  .step-card p { font-size: 12px; color: var(--muted); line-height: 1.65; }
+  .step-tag { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); background: var(--amber-dim); padding: 3px 8px; border-radius: 4px; margin-bottom: 14px; }
+
+  .ml-box { margin-top: 40px; background: var(--bg2); border: 1px solid var(--border); border-radius: 20px; padding: 40px; display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+  .ml-box h3 { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 700; margin-bottom: 16px; line-height: 1.2; }
+  .ml-box h3 em { font-style: italic; color: var(--amber); }
+  .ml-box p { font-size: 14px; color: var(--muted); line-height: 1.8; margin-bottom: 12px; }
+  .quintis-chart { display: flex; flex-direction: column; gap: 10px; }
+  .quintil-row { display: flex; align-items: center; gap: 12px; }
+  .quintil-label { font-size: 11px; color: var(--muted); width: 105px; flex-shrink: 0; font-weight: 500; }
+  .quintil-bar-wrap { flex: 1; background: rgba(255,255,255,0.05); border-radius: 4px; height: 26px; overflow: hidden; }
+  .quintil-bar { height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 10px; font-size: 10px; font-weight: 600; color: #000; width: 0; transition: width 1.5s cubic-bezier(0.16,1,0.3,1); }
+  .q1 { background: #F5A623; }
+  .q2 { background: #d4891d; }
+  .q3 { background: #b37218; }
+  .q4 { background: #905b13; }
+  .q5 { background: #6e440e; color: rgba(255,255,255,0.7); }
+
+  .results-hero { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 56px; margin-bottom: 32px; }
+  .result-big { background: linear-gradient(135deg, var(--amber) 0%, #d4891d 100%); border-radius: 20px; padding: 44px 40px; display: flex; flex-direction: column; justify-content: space-between; min-height: 200px; position: relative; overflow: hidden; }
+  .result-big::before { content: ''; position: absolute; bottom: -20px; right: -20px; width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.1); }
+  .result-big .rb-label { font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(0,0,0,0.6); }
+  .result-big .rb-num { font-family: 'Playfair Display', serif; font-size: 64px; font-weight: 900; color: #000; line-height: 1; margin: 12px 0; }
+  .result-big .rb-desc { font-size: 13px; font-weight: 500; color: rgba(0,0,0,0.7); line-height: 1.5; }
+  .result-big .rb-badge { display: inline-block; background: rgba(0,0,0,0.15); color: #000; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; margin-top: 12px; }
+  .results-grid { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; margin-bottom: 40px; }
+  .result-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 16px; padding: 28px 20px; text-align: center; transition: border-color 0.2s; }
+  .result-card:hover { border-color: var(--amber); }
+  .result-card .rc-num { font-family: 'Playfair Display', serif; font-size: 32px; font-weight: 700; color: var(--amber); line-height: 1; margin-bottom: 8px; }
+  .result-card .rc-label { font-size: 11px; color: var(--muted); line-height: 1.5; }
+
+  .cohort-wrap { margin-top: 40px; }
+  .cohort-title { font-size: 11px; font-weight: 600; color: var(--muted); margin-bottom: 16px; text-transform: uppercase; letter-spacing: 0.1em; }
+  .cohort-table-wrap { overflow-x: auto; border-radius: 14px; border: 1px solid var(--border); }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  thead tr { background: var(--bg3); border-bottom: 1px solid var(--border); }
+  thead th { padding: 14px 20px; text-align: left; font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--muted); }
+  tbody tr { border-bottom: 1px solid rgba(255,255,255,0.04); transition: background 0.15s; }
+  tbody tr:hover { background: rgba(245,166,35,0.04); }
+  tbody tr:last-child { border-bottom: none; }
+  tbody td { padding: 13px 20px; color: var(--text); }
+  tbody td.highlight { color: var(--amber); font-weight: 600; }
+  .conv-bar-cell { display: flex; align-items: center; gap: 12px; }
+  .conv-bar-bg { flex: 1; height: 6px; background: rgba(255,255,255,0.06); border-radius: 3px; overflow: hidden; }
+  .conv-bar-fill { height: 100%; background: var(--amber); border-radius: 3px; width: 0; transition: width 1s ease; }
+  .best-badge { display: inline-block; background: var(--amber); color: #000; font-size: 9px; font-weight: 700; letter-spacing: 0.08em; padding: 2px 7px; border-radius: 4px; text-transform: uppercase; margin-left: 8px; }
+
+  .learnings-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 56px; }
+  .learning-col h3 { font-size: 12px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--amber); margin-bottom: 24px; padding-bottom: 12px; border-bottom: 1px solid var(--border); }
+  .learning-item { display: flex; gap: 16px; margin-bottom: 24px; align-items: flex-start; }
+  .learning-dot { width: 8px; height: 8px; min-width: 8px; border-radius: 50%; background: var(--amber); margin-top: 6px; }
+  .learning-item p { font-size: 14px; color: rgba(240,237,232,0.8); line-height: 1.75; }
+  .learning-item p strong { color: var(--text); font-weight: 600; }
+
+  .closing { text-align: center; padding: 100px 48px 120px; max-width: 700px; margin: 0 auto; }
+  .closing h2 { font-family: 'Playfair Display', serif; font-size: clamp(28px, 4vw, 44px); font-weight: 700; line-height: 1.2; margin-bottom: 24px; }
+  .closing h2 em { font-style: italic; color: var(--amber); }
+  .closing p { font-size: 15px; color: var(--muted); line-height: 1.8; margin-bottom: 40px; }
+  .author-chip { display: inline-flex; align-items: center; gap: 14px; background: var(--bg2); border: 1px solid var(--border); border-radius: 50px; padding: 10px 20px 10px 10px; }
+  .author-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--amber); display: flex; align-items: center; justify-content: center; font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 700; color: #000; }
+  .author-name { font-size: 14px; font-weight: 600; color: var(--text); }
+  .author-role { font-size: 12px; color: var(--muted); }
+
+  .scroll-progress { position: fixed; top: 0; left: 0; height: 3px; background: var(--amber); z-index: 200; width: 0%; }
+
+  .fade-in { opacity: 0; transform: translateY(28px); transition: opacity 0.7s ease, transform 0.7s ease; }
+  .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+  .channels { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 20px; }
+  .channel-pill { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; font-weight: 600; padding: 5px 12px; border-radius: 50px; background: var(--amber-dim); color: var(--amber); border: 1px solid rgba(245,166,35,0.25); }
+
+  @media (max-width: 900px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 80px 24px; }
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; padding: 0 24px; }
+    .hero-card { display: none; }
+    .context-grid, .problem-grid, .strategy-header, .results-hero, .learnings-grid, .ml-box { grid-template-columns: 1fr; }
+    .strategy-steps { grid-template-columns: 1fr; }
+    .results-grid { grid-template-columns: 1fr 1fr; }
+    .divider { padding: 0 24px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="scroll-progress" id="progress"></div>
+
+<nav>
+  <div class="nav-logo">VB Experiências</div>
+  <ul class="nav-links">
+    <li><a href="#contexto">Contexto</a></li>
+    <li><a href="#problema">Problema</a></li>
+    <li><a href="#estrategia">Estratégia</a></li>
+    <li><a href="#resultados">Resultados</a></li>
+    <li><a href="#aprendizados">Aprendizados</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-eyebrow">Case CRM — Vale Bonus</div>
+      <h1>Conversas<br>que <em>Conectam</em></h1>
+      <p class="hero-sub">Como o WhatsApp se tornou o protagonista no onboarding do Vale Bonus — reduzindo CAC, aumentando a conversão em M0 e atingindo o melhor resultado de cohort em um ano.</p>
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="label">Empresa</div>
+          <div class="value">Vale Bonus by CRMBonus</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="label">Pilar</div>
+          <div class="value">Onboarding & Engajamento</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="label">Canal principal</div>
+          <div class="value">WhatsApp</div>
+        </div>
+      </div>
+    </div>
+    <div class="hero-card">
+      <div class="hero-card-label">Resultados em destaque</div>
+      <div class="hero-stats">
+        <div class="hero-stat">
+          <div class="num" data-target="23.71" data-suffix="%">0%</div>
+          <div class="desc">Conversão M0<br>cohort Vivo</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num" data-target="470" data-suffix="k">0k</div>
+          <div class="desc">Conversas via<br>WhatsApp</div>
+        </div>
+        <div class="hero-stat-divider"></div>
+        <div class="hero-stat">
+          <div class="num" data-prefix="R$" data-target="0.65" data-suffix="">R$0</div>
+          <div class="desc">CAC em M1<br>via WPP</div>
+        </div>
+        <div class="hero-stat">
+          <div class="num" data-target="12" data-suffix="%">0%</div>
+          <div class="desc">Conversão<br>em M1</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- CONTEXTO -->
+<section id="contexto">
+  <div class="fade-in">
+    <div class="section-tag"><span></span>01 — Contexto</div>
+    <h2 class="section-title">O produto, o canal<br>e o <em>objetivo</em></h2>
+  </div>
+  <div class="context-grid fade-in">
+    <div class="context-text">
+      <p>O <strong>Vale Bonus</strong> é uma plataforma de benefícios com mais de <strong>7 milhões de usuários cadastrados</strong>, desenvolvida pela CRMBonus. A plataforma opera em modelo híbrido: combina moeda proprietária, resgate de ofertas, venda de produtos e monetização via mídia.</p>
+      <p>Um dos maiores parceiros do Vale Bonus é a <strong>Vivo</strong>, que gera um volume expressivo de novos usuários a cada mês. Esses usuários chegam ao app com saldo disponível, mas precisam ser educados sobre o funcionamento da plataforma para concretizarem o primeiro resgate.</p>
+      <p>Minha atuação no projeto foi como <strong>Analista de CRM</strong>, responsável pela estratégia do canal WhatsApp dentro da jornada de onboarding — da definição de públicos à análise de conversão por coorte e apresentação de resultados para o time de produto.</p>
+      <div class="channels">
+        <span class="channel-pill">📱 WhatsApp</span>
+      </div>
+    </div>
+    <div class="context-cards">
+      <div class="context-card">
+        <div class="context-card-icon">🎯</div>
+        <div>
+          <h4>Objetivo principal</h4>
+          <p>Garantir o primeiro resgate e aumentar a conversão nos meses M0 e M1 — o período mais crítico para a retenção de longo prazo.</p>
+        </div>
+      </div>
+      <div class="context-card">
+        <div class="context-card-icon">🤝</div>
+        <div>
+          <h4>Parceiro com meta</h4>
+          <p>A Vivo exigia metas mensais de resgate, criando pressão direta sobre a eficiência do onboarding e sobre a operação de CRM.</p>
+        </div>
+      </div>
+      <div class="context-card">
+        <div class="context-card-icon">📊</div>
+        <div>
+          <h4>Modelo complexo de educar</h4>
+          <p>O modelo híbrido — moeda + marketplace — exigia um canal capaz de educar o usuário, não apenas notificar. Push não era suficiente.</p>
+        </div>
+      </div>
+      <div class="context-card">
+        <div class="context-card-icon">🔬</div>
+        <div>
+          <h4>Meu papel no projeto</h4>
+          <p>Estratégia, operação e análise do canal WhatsApp. Segmentação via modelo preditivo (XGBoost) e apresentação de resultados para o time de produto.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- PROBLEMA -->
+<section id="problema">
+  <div class="fade-in">
+    <div class="section-tag"><span></span>02 — O Problema</div>
+    <h2 class="section-title">Nem toda boa ideia<br>nasce pronta — ela nasce<br>de uma <em>dor</em></h2>
+  </div>
+  <div class="problem-grid fade-in">
+    <div class="problem-items">
+      <div class="problem-item">
+        <h4>Quebra crítica de engajamento M0 → M1</h4>
+        <p>Cerca de 65% dos usuários que chegavam ao app em M0 não mantinham engajamento até M1. O primeiro mês era o maior gargalo de ativação de toda a jornada.</p>
+      </div>
+      <div class="problem-item">
+        <h4>Dificuldade de atingir as metas da Vivo</h4>
+        <p>O volume de resgates do cohort Vivo estava aquém das metas acordadas com o parceiro, gerando pressão sobre toda a operação.</p>
+      </div>
+      <div class="problem-item">
+        <h4>Push insuficiente como canal de ativação</h4>
+        <p>O push notification era o principal canal com novos usuários, mas sua taxa de entrega e conversão não eram suficientes para resolver o problema de ativação no M0.</p>
+      </div>
+      <div class="problem-item">
+        <h4>Estratégia ampla demais para M1 e M2</h4>
+        <p>Não havia visão clara sobre quais segmentos tinham maior propensão à conversão. Todas as comunicações eram disparadas para toda a base, sem priorização — dispersando custo e resultado.</p>
+      </div>
+    </div>
+    <div class="tension-box fade-in">
+      <div class="tension-vs">
+        <div class="tension-side">
+          <div class="cost-label">Custo Inorgânico</div>
+          <div class="cost-value">R$8–9</div>
+          <div class="cost-desc">por conversa<br>iniciada</div>
+        </div>
+        <div class="tension-divider">vs</div>
+        <div class="tension-side">
+          <div class="cost-label">Custo WPP</div>
+          <div class="cost-value">R$4,90–8,15</div>
+          <div class="cost-desc">por conversa<br>via WhatsApp</div>
+        </div>
+      </div>
+      <div class="tension-insight">
+        O WhatsApp Marketing chegava a ser <strong>9,4x mais caro</strong> do que o WhatsApp Utilidade. Isso tornava crítica a decisão sobre qual tipo de template usar, para quem disparar e com qual frequência. A equação não era só de canal — era de eficiência de custo versus qualidade da conversa.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- ESTRATÉGIA -->
+<section id="estrategia">
+  <div class="strategy-header fade-in">
+    <div>
+      <div class="section-tag"><span></span>03 — Estratégia & Decisões</div>
+      <h2 class="section-title">As decisões<br>que <em>mudaram</em><br>o jogo</h2>
+    </div>
+    <p class="section-desc">A estratégia nasceu da combinação de três movimentos: validação de hipótese de canal, inteligência de dados para segmentação, e evolução de linguagem utilitária para comunicação humana.</p>
+  </div>
+
+  <div class="strategy-steps fade-in">
+    <div class="step-card">
+      <div class="step-tag">Decisão 01</div>
+      <div class="step-num">01</div>
+      <h4>Apostar no WhatsApp como canal de ativação</h4>
+      <p>Mesmo com custo mais alto, o WhatsApp oferecia algo que outros canais não tinham: conversas reais. A hipótese era que um canal mais pessoal converteria melhor em M0.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-tag">Decisão 02</div>
+      <div class="step-num">02</div>
+      <h4>Usar modelo preditivo para priorizar usuários</h4>
+      <p>Aplicamos um modelo de propensão para segmentar a base em quintis de conversão — concentrando o investimento nos usuários com maior probabilidade de ativar.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-tag">Decisão 03</div>
+      <div class="step-num">03</div>
+      <h4>Migrar de templates utilitários para linguagem criativa</h4>
+      <p>Com o esgotamento dos templates de utilidade e os primeiros resultados positivos, a estratégia evoluiu para mensagens sazonais com tom mais humano e próximo.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-tag">Decisão 04</div>
+      <div class="step-num">04</div>
+      <h4>Calibrar quintis, frequência e volume de disparo</h4>
+      <p>A operação foi ajustada com insights preditivos: qual quintil disparar primeiro, com qual frequência e volume — balanceando custo e conversão.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-tag">Decisão 05</div>
+      <div class="step-num">05</div>
+      <h4>Isolar e medir o cohort Vivo separadamente</h4>
+      <p>Criar um cohort específico para usuários Vivo permitiu medir o impacto real das ações e gerar visibilidade sobre as metas do parceiro.</p>
+    </div>
+    <div class="step-card">
+      <div class="step-tag">Decisão 06</div>
+      <div class="step-num">06</div>
+      <h4>Fluxo específico para não-convertidos em 7 dias</h4>
+      <p>Usuários que não converteram nos primeiros 7 dias recebiam disparo direcionado via WhatsApp — ampliando a janela de ativação sem elevar o CAC geral.</p>
+    </div>
+  </div>
+
+  <div class="ml-box fade-in">
+    <div>
+      <h3>Segmentação por<br><em>quintis preditivos</em><br>de conversão</h3>
+      <p>O modelo de propensão classificava cada novo usuário em 5 faixas de probabilidade de conversão, com base em dados de perfil e comportamento. Isso permitiu concentrar o orçamento de WhatsApp nos usuários com maior chance de converter.</p>
+      <p>A taxa de default variava de <strong>13%</strong> no quintil mais frio a <strong>42%</strong> no mais aquecido — criando uma hierarquia clara de priorização de disparo.</p>
+    </div>
+    <div>
+      <div class="quintis-chart">
+        <div class="quintil-row">
+          <div class="quintil-label">Q5 — 0.35–0.94</div>
+          <div class="quintil-bar-wrap"><div class="quintil-bar q1" data-width="84">42%</div></div>
+        </div>
+        <div class="quintil-row">
+          <div class="quintil-label">Q4 — 0.28–0.35</div>
+          <div class="quintil-bar-wrap"><div class="quintil-bar q2" data-width="63">31,5%</div></div>
+        </div>
+        <div class="quintil-row">
+          <div class="quintil-label">Q3 — 0.22–0.28</div>
+          <div class="quintil-bar-wrap"><div class="quintil-bar q3" data-width="51">25,6%</div></div>
+        </div>
+        <div class="quintil-row">
+          <div class="quintil-label">Q2 — 0.15–0.22</div>
+          <div class="quintil-bar-wrap"><div class="quintil-bar q4" data-width="40">20,1%</div></div>
+        </div>
+        <div class="quintil-row">
+          <div class="quintil-label">Q1 — 0.00–0.15</div>
+          <div class="quintil-bar-wrap"><div class="quintil-bar q5" data-width="26">13%</div></div>
+        </div>
+      </div>
+      <p style="font-size:11px;color:var(--muted);margin-top:14px;">Taxa de default por quintil de propensão — Jan–Mar 2025</p>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESULTADOS -->
+<section id="resultados">
+  <div class="fade-in">
+    <div class="section-tag"><span></span>04 — Métricas & Resultados</div>
+    <h2 class="section-title">Quando a<br><em>mágica</em> acontece</h2>
+  </div>
+
+  <div class="results-hero fade-in">
+    <div class="result-big">
+      <div class="rb-label">Melhor resultado em 1 ano</div>
+      <div class="rb-num" data-target="23.71" data-suffix="%">0%</div>
+      <div>
+        <div class="rb-desc">Conversão no M0 do cohort Vivo<br>em junho de 2025</div>
+        <div class="rb-badge">Pico histórico — Jun/2025</div>
+      </div>
+    </div>
+    <div class="result-big" style="background:var(--bg2);border:1px solid var(--border);">
+      <div class="rb-label" style="color:var(--muted)">Escala de impacto</div>
+      <div class="rb-num" style="color:var(--amber)" data-target="470" data-suffix="k">0k</div>
+      <div>
+        <div class="rb-desc" style="color:var(--muted)">Conversas iniciadas via WhatsApp<br>na jornada de onboarding</div>
+        <div class="rb-badge" style="background:var(--amber-dim);color:var(--amber)">Canal proprietário</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="results-grid fade-in">
+    <div class="result-card">
+      <div class="rc-num" data-target="12" data-suffix="%">0%</div>
+      <div class="rc-label">Conversão em M1<br>via WhatsApp</div>
+    </div>
+    <div class="result-card">
+      <div class="rc-num" data-prefix="R$" data-target="0.65" data-suffix="">R$0</div>
+      <div class="rc-label">CAC em M1<br>via WPP</div>
+    </div>
+    <div class="result-card">
+      <div class="rc-num" data-target="5.7" data-suffix="%">0%</div>
+      <div class="rc-label">Conversão em M2<br>via WhatsApp</div>
+    </div>
+    <div class="result-card">
+      <div class="rc-num" data-prefix="R$" data-target="1.27" data-suffix="">R$0</div>
+      <div class="rc-label">CAC em M2<br>via WPP</div>
+    </div>
+  </div>
+
+  <div class="cohort-wrap fade-in">
+    <div class="cohort-title">Evolução do cohort Vivo — Jul 2024 a Jun 2025</div>
+    <div class="cohort-table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Mês</th>
+            <th>Usuários no cohort</th>
+            <th>Taxa de conversão</th>
+            <th>Tendência</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Jul 2024</td><td>180.832</td><td class="highlight">25,24%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="100"></div></div></div></td></tr>
+          <tr><td>Ago 2024</td><td>180.189</td><td class="highlight">19,72%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="78"></div></div></div></td></tr>
+          <tr><td>Set 2024</td><td>222.433</td><td class="highlight">18,79%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="74"></div></div></div></td></tr>
+          <tr><td>Out 2024</td><td>240.820</td><td class="highlight">20,12%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="80"></div></div></div></td></tr>
+          <tr><td>Nov 2024</td><td>254.365</td><td class="highlight">22,72%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="90"></div></div></div></td></tr>
+          <tr><td>Dez 2024</td><td>189.324</td><td class="highlight">23,69%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="94"></div></div></div></td></tr>
+          <tr><td>Jan 2025</td><td>153.855</td><td class="highlight">21,53%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="85"></div></div></div></td></tr>
+          <tr><td>Fev 2025</td><td>155.697</td><td class="highlight">23,07%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="91"></div></div></div></td></tr>
+          <tr><td>Mar 2025</td><td>152.715</td><td class="highlight">22,53%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="89"></div></div></div></td></tr>
+          <tr><td>Abr 2025</td><td>80.240</td><td class="highlight">22,30%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="88"></div></div></div></td></tr>
+          <tr><td>Mai 2025</td><td>114.176</td><td class="highlight">22,61%</td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="90"></div></div></div></td></tr>
+          <tr><td>Jun 2025</td><td>105.487</td><td class="highlight">23,71% <span class="best-badge">melhor do ano</span></td><td><div class="conv-bar-cell"><div class="conv-bar-bg"><div class="conv-bar-fill" data-width="94"></div></div></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- APRENDIZADOS -->
+<section id="aprendizados">
+  <div class="fade-in">
+    <div class="section-tag"><span></span>05 — Aprendizados</div>
+    <h2 class="section-title">O que ficou,<br>o que <em>mudaria</em></h2>
+  </div>
+  <div class="learnings-grid fade-in">
+    <div class="learning-col">
+      <h3>✦ O que funcionou bem</h3>
+      <div class="learning-item">
+        <div class="learning-dot"></div>
+        <p><strong>Segmentação preditiva muda o jogo.</strong> A aplicação do XGBoost para priorização de quintis foi o diferencial que permitiu escalar o WhatsApp sem explodir o CAC. Dados bem usados transformam canal caro em canal eficiente.</p>
+      </div>
+      <div class="learning-item">
+        <div class="learning-dot"></div>
+        <p><strong>Canal e linguagem andam juntos.</strong> A migração de templates utilitários para comunicação mais humana e sazonal não foi apenas criativa — foi estratégica. A voz da marca no WhatsApp importa tanto quanto o timing do disparo.</p>
+      </div>
+      <div class="learning-item">
+        <div class="learning-dot"></div>
+        <p><strong>Medir por cohort, não por campanha.</strong> Isolar o cohort Vivo revelou a evolução real da conversão ao longo do tempo — algo que métricas de campanha pontual nunca mostrariam.</p>
+      </div>
+      <div class="learning-item">
+        <div class="learning-dot"></div>
+        <p><strong>Fluxo de não-convertidos como safety net.</strong> O disparo específico para usuários que não converteram em 7 dias mostrou alto impacto em M0 com baixo custo marginal.</p>
+      </div>
+    </div>
+    <div class="learning-col">
+      <h3>◦ O que faria diferente</h3>
+      <div class="learning-item">
+        <div class="learning-dot"></div>
+        <p><strong>Iniciar os testes A/B de linguagem mais cedo.</strong> A mudança de tom aconteceu após o esgotamento dos templates utilitários. Com um backlog estruturado de testes desde o início, o aprendizado seria mais rápido e orientado a dados.</p>
+      </div>
+      <div class="learning-item">
+        <div class="learning-dot"></div>
+        <p><strong>Mapear a jornada pós-M0 desde o início.</strong> O projeto foi muito bem-sucedido em M0, mas a construção da jornada de recorrência para M1 e M2 poderia ter sido planejada em paralelo, não como consequência.</p>
+      </div>
+      <div class="learning-item">
+        <div class="learning-dot"></div>
+        <p><strong>Evoluir de campanha pontual para jornada automatizada.</strong> Um aprendizado importante foi perceber que tratar o WhatsApp como um disparo isolado limitava o potencial da iniciativa. O próximo passo natural — e o que faria diferente desde o início — seria integrar essa comunicação dentro de uma jornada automatizada de onboarding, com gatilhos comportamentais e mensagens encadeadas conforme a evolução do usuário no app.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CLOSING -->
+<div class="closing fade-in">
+  <h2>CRM não é canal —<br>é <em>conversa com intenção</em></h2>
+  <p>Este projeto me mostrou que a diferença entre um CRM operacional e um CRM estratégico está em combinar dados, criatividade e visão de negócio numa mesma jornada. O WhatsApp foi o veículo — mas o que realmente ativou os usuários foi a decisão de tratar cada mensagem como uma conversa que vale o custo.</p>
+  <div class="author-chip">
+    <div class="author-avatar">L</div>
+    <div>
+      <div class="author-name">Lara Garcia</div>
+      <div class="author-role">Analista de CRM — Vale Bonus by CRMBonus</div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // SCROLL PROGRESS
+  window.addEventListener('scroll', () => {
+    const el = document.getElementById('progress');
+    const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+    el.style.width = Math.min(pct, 100) + '%';
+  });
+
+  // FADE IN
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach((e, i) => { if (e.isIntersecting) setTimeout(() => e.target.classList.add('visible'), i * 80); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+
+  // COUNTERS
+  function animCounter(el) {
+    const target = parseFloat(el.dataset.target);
+    const suffix = el.dataset.suffix || '';
+    const prefix = el.dataset.prefix || '';
+    const dec = target % 1 !== 0;
+    const dur = 1800;
+    const t0 = performance.now();
+    const tick = (now) => {
+      const p = Math.min((now - t0) / dur, 1);
+      const ease = 1 - Math.pow(1 - p, 3);
+      el.textContent = prefix + (dec ? (target * ease).toFixed(2) : Math.round(target * ease)) + suffix;
+      if (p < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+  }
+  const cObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting && !e.target.dataset.animated) { e.target.dataset.animated = '1'; animCounter(e.target); } });
+  }, { threshold: 0.5 });
+  document.querySelectorAll('[data-target]').forEach(el => cObs.observe(el));
+
+  // BARS
+  const bObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.quintil-bar[data-width]').forEach(b => setTimeout(() => b.style.width = b.dataset.width + '%', 200));
+        e.target.querySelectorAll('.conv-bar-fill[data-width]').forEach(b => setTimeout(() => b.style.width = b.dataset.width + '%', 300));
+      }
+    });
+  }, { threshold: 0.2 });
+  document.querySelectorAll('.ml-box, .cohort-table-wrap').forEach(el => bObs.observe(el));
+</script>
+</body>
+</html>
